@@ -24,7 +24,7 @@ const THButton = (props) => {
         </TouchableOpacity>
     </View>)
 };
-THButton.PropTypes = {
+THButton.propTypes = {
     style: PropTypes.object,
     textStyle: PropTypes.object,
     disable: PropTypes.bool

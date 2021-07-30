@@ -2,6 +2,9 @@ apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
 
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+//[react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 的其他使用
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -82,6 +85,8 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+
+
 
 /**
  * Set this to true to create two separate APKs instead of one:
