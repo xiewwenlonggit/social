@@ -1,6 +1,9 @@
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux'
+import { useToast, Center, Flex } from "native-base";
+import { ActivityIndicator, View } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../view/login';
 import Demo from '../view/demo';
 // import UserInfo from "./pages/account/userinfo";
@@ -26,6 +29,29 @@ const Stack = createStackNavigator();
 // @inject('RootStore')
 // @observer
 const Nav = () => {
+  const Toast = useToast();
+  const storeInfos = useSelector(state => state.loading);
+  const toastId = useRef();
+  useEffect(() => {
+    if (storeInfos) {
+      toastId.current = Toast.show({
+        render: () => {
+          return (
+            <Flex flex={1} justify="center" align='center' style={{ backgroundColor: "#000" }} w={20} h={20} >
+              <ActivityIndicator size="large" color="white" />
+            </Flex>
+          )
+        },
+        placement: 'top',
+        duration: 30000
+      },
+
+
+      );
+    } else {
+      Toast.close(toastId.current);
+    }
+  }, [storeInfos])
   return (
     <NavigationContainer>
       <Stack.Navigator headerMode="none" initialRouteName={Login}>

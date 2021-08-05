@@ -1,6 +1,8 @@
 import axios from "axios";
 import { BASE_URI } from "./pathMap";
-import Toast from "./Toast";
+// import Toast from "./Toast";
+import Store from '../redux/store'
+import { setLoading } from '../redux/actions/loading'
 // 配置请求头
 axios.defaults.headers["Content-Type"] = "application/json";
 // 响应时间
@@ -9,7 +11,7 @@ axios.defaults.baseURL = BASE_URI;
 //请求拦截器
 axios.interceptors.request.use(
     (config) => {
-        Toast.showLoading("请求中");
+        Store.dispatch(setLoading(true))
         // if (user) {
         //   // 设置统一的请求header
         //   config.headers.authorization = user.token; //授权(每次请求把token带给后台)
@@ -18,7 +20,6 @@ axios.interceptors.request.use(
         return config;
     },
     (error) => {
-        Toast.hideLoading();
         return Promise.reject(error);
     }
 );
@@ -27,11 +28,11 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     (response) => {
         // 对响应数据做点什么
-        Toast.hideLoading();
+        Store.dispatch(setLoading(false));
+        console.log(response.data)
         return response.data;
     },
     (error) => {
-        Toast.hideLoading();
         return Promise.resolve(error);
     }
 );
@@ -65,12 +66,12 @@ function get(url, params, options = {}) {
  * @param {String} url [请求的url地址]
  * @param {Object} params [请求时携带的参数]
  */
-function post(url, params, option = {}) {
+function post(url, params, options = {}) {
     const headers = options.headers || {};
     return new Promise((resolve, reject) => {
         axios
             .post(`${url}`, params, {
-                ...option, headers: {
+                ...options, headers: {
                     ...headers
                 }
             })

@@ -1,7 +1,7 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // 存储
-const setLocalStorage = async (key, value, isJSON) => {
+const setLocalStorage = async (key, value, isJSON = false) => {
     if (isJSON) {
         try {
             const jsonValue = JSON.stringify(value)
@@ -19,7 +19,7 @@ const setLocalStorage = async (key, value, isJSON) => {
 
 }
 // 获取locaStorage
-const getLocalStorage = async (key, isJSON) => {
+const getLocalStorage = async (key, isJSON = false) => {
     if (isJSON) {
         try {
             const jsonValue = await AsyncStorage.getItem(key)
