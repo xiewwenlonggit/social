@@ -8,11 +8,11 @@ import validator from '../../utils/validator'
 import { post } from '../../api'
 import { ACCOUNT_VALIDATEVCODE, ACCOUNT_LOGIN } from "../../api/pathMap";
 import { useDispatch } from 'react-redux';
-import setUserInfo from '../../redux/reducers/user';
+import { setUserInfo } from '../../redux/actions/user';
 import { CodeField, Cursor } from 'react-native-confirmation-code-field';
 // 手机号码输入
 const RenLogin = (props) => {
-  const { phoneNumber, phoneValid, setPhoneNumber, setPhonerVaild, setShowLogin, countDown
+  const { phoneNumber, phoneValid, setPhoneNumber, setPhonerVaild, setShowLogin, countDown, setBtnText
   } = props;
   // 设置电话号码
   const phoneChangeText = (value) => {
@@ -33,6 +33,7 @@ const RenLogin = (props) => {
     })
     if (res.code === '10000') {
       setShowLogin(false);
+      setBtnText("确定");
       countDown()
     }
   }
@@ -80,8 +81,9 @@ const RenLogin = (props) => {
  * ******* */
 // 获取验证码
 const RenCode = (props) => {
+  const dispatch = useDispatch();
   const Toast = useToast()
-  const { vcodeTxt, setVcodeTxt, btnText, isCountDowning, phoneNumber, countDown } = props;
+  const { vcodeTxt, setVcodeTxt, btnText, isCountDowning, phoneNumber, countDown, navigation } = props;
   // 输入验证码
   const onVcodeChangeText = (val) => {
     setVcodeTxt(val)
@@ -92,13 +94,27 @@ const RenCode = (props) => {
       Toast.show({ title: "验证码不正确" });
       return;
     }
-
+    const res = await post(ACCOUNT_VALIDATEVCODE, {
+      phone: phoneNumber,
+      vcode: vcodeTxt
+    })
+    if (res.code !== '10000') {
+      return;
+    }
+    countDown();
+    const { token, id, isNew } = res.data;
+    dispatch(setUserInfo({
+      phoneNumber,
+      token,
+      id
+    }))
+    // 如果是新用户跳转修改信息页面
+    if (isNew) {
+      navigation.navigate("UserInfo");
+    }
 
   }
 
-  const repGetVcode = () => {
-    countDown()
-  }
   return (
     <View>
       {/*  */}
@@ -128,7 +144,7 @@ const RenCode = (props) => {
         />
         {/* 底部按钮 */}
         <View style={{ marginTop: pxToDp(10) }}>
-          <THButton disabled={isCountDowning} onPress={repGetVcode} style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>{btnText}
+          <THButton disabled={isCountDowning} onPress={onVcodeSubmitEditing} style={{ width: "85%", alignSelf: "center", height: pxToDp(40), borderRadius: pxToDp(20) }}>{btnText}
           </THButton>
         </View>
       </View>
@@ -138,8 +154,7 @@ const RenCode = (props) => {
 
 
 
-const Login = () => {
-  const dispatch = useDispatch();
+const Login = (props) => {
   // 手机号码 
   const [phoneNumber1, setPhoneNumber] = useState('');
   //电话号码合法性
@@ -212,6 +227,7 @@ const Login = () => {
             isCountDowning={isCountDowning}
             setIsCountDowning={setIsCountDowning}
             countDown={countDown}
+            setBtnText={setBtnText}
           /> : <RenCode
             setVcodeTxt={setVcodeTxt}
             setBtnText={setBtnText}
@@ -220,7 +236,8 @@ const Login = () => {
             isCountDowning={isCountDowning}
             setIsCountDowning={setIsCountDowning}
             phoneNumber={phoneNumber}
-
+            countDown={countDown}
+            navigation={props.navigation}
           />
         }
       </View>

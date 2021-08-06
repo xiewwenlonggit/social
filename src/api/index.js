@@ -67,22 +67,28 @@ function get(url, params, options = {}) {
  * @param {Object} params [请求时携带的参数]
  */
 function post(url, params, options = {}) {
-    const headers = options.headers || {};
-    return new Promise((resolve, reject) => {
-        axios
-            .post(`${url}`, params, {
-                ...options, headers: {
-                    ...headers
-                }
-            })
-            .then((res) => {
-                resolve(res)
-            })
-            .catch((err) => {
-                reject(err);
-            });
-    });
+    try {
+        const headers = options.headers || {};
+        return new Promise((resolve, reject) => {
+            axios
+                .post(`${url}`, params, {
+                    ...options, headers: {
+                        ...headers
+                    }
+                })
+                .then((res) => {
+                    resolve(res)
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+    } catch (error) {
+        throw new Error(error)
+    }
+
 }
+
 
 // 对外暴露
 export { post, get };

@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { lazy, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux'
-import { useToast, Center, Flex } from "native-base";
-import { ActivityIndicator, View } from 'react-native'
+import { useToast, Flex } from "native-base";
+import { ActivityIndicator } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Login from '../view/login';
 import Demo from '../view/demo';
+import UserInfo from '../view/user'
 // import UserInfo from "./pages/account/userinfo";
 // import Tabbar from "./tabbar";
 // import TanHua from "./pages/friend/tanhua";
@@ -54,7 +55,8 @@ const Nav = () => {
   }, [storeInfos])
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName={Login}>
+      <Stack.Navigator headerMode="none" initialRouteName={UserInfo}>
+        <Stack.Screen name="UserInfo" component={UserInfo} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Demo" component={Demo} />
       </Stack.Navigator>
