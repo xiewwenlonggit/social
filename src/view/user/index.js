@@ -1,5 +1,5 @@
 // 用户注册
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import { Input } from 'native-base';
 import pxToDp from '../../utils/PixelRatio'
@@ -7,7 +7,12 @@ import SvgUrl from 'react-native-svg-uri';
 import { male, female } from "../../res/fonts/iconSvg";
 import moment from 'moment';
 import DatePicker from "react-native-datepicker";
+import THButton from '../../public/THButton';
+import Picker from 'react-native-picker';
+import CityJson from '../../res/citys.json';
+import useGeo from '../../utils/Geo';
 const USer = () => {
+    const Location = useGeo();
     const currentDate = moment(new Date()).format("YYYY-MM-DD")
     const [gender, setGender] = useState('男');
     const chooseGender = (el) => {
@@ -17,6 +22,25 @@ const USer = () => {
     const [birthday, setBirthday] = useState("");
     changeDate = (e) => {
         setBirthday(e)
+    }
+    const [city, setCity] = useState("");
+    useEffect(async () => {
+        const res = await Location.getCityByLocation();
+        console.log(res)
+    }, [])
+    showCityPicker = () => {
+        Picker.init({
+            piickerData: CityJson,
+            selectedValue: ["北京", "北京"],
+            wheelFlex: [1, 1, 0],
+            pickerConfirmBtnText: "确定",
+            pickerCancelBtnText: "取消",
+            pickerTitleText: "选择城市",
+            onPickerConfirm: date => {
+                setCity({ city: data[1] })
+            }
+        })
+        Picker.show();
     }
     return (<View style={{ backgroundColor: "#fff", flex: 1, padding: pxToDp(20) }}>
         {/* 标题sta */}
@@ -106,6 +130,17 @@ const USer = () => {
             />
         </View>
         {/* 出生日期选择end */}
+        <View style={{ marginTop: pxToDp(20) }}>
+            <TouchableOpacity onPress={showCityPicker}>
+                <Input
+                    value={"当前定位：" + city}
+                    style={{ color: "#666" }}
+                    isDisabled={true}
+                />
+
+            </TouchableOpacity>
+
+        </View>
     </View >)
 };
 const styles = StyleSheet.create({
