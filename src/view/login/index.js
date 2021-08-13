@@ -11,6 +11,7 @@ import {ACCOUNT_VALIDATEVCODE, ACCOUNT_LOGIN} from '../../api/pathMap';
 import {useDispatch} from 'react-redux';
 import {setUserInfo} from '../../redux/actions/user';
 import {CodeField, Cursor} from 'react-native-confirmation-code-field';
+import {setLocalStorage} from '../../utils';
 // 手机号码输入
 const RenLogin = props => {
   const {
@@ -137,8 +138,19 @@ const RenCode = props => {
         id,
       }),
     );
+    setLocalStorage(
+      'userInfo',
+      {
+        phoneNumber,
+        token,
+        id,
+      },
+      true,
+    );
     // 如果是新用户跳转修改信息页面
     if (isNew) {
+      navigation.navigate('UserInfo');
+    } else {
       navigation.navigate('UserInfo');
     }
   };
@@ -193,7 +205,7 @@ const RenCode = props => {
 
 const Login = props => {
   // 手机号码
-  const [phoneNumber1, setPhoneNumber] = useState('');
+  const [phoneNumber1, setPhoneNumber] = useState('18665711978');
   //电话号码合法性
   const [phoneValid1, setPhonerVaild] = useState(true);
   // 是否显示登录页面

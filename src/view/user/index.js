@@ -15,10 +15,16 @@ import CityJson from '../../res/citys.json';
 import Geo from '../../utils/Geo';
 import ImagePicker from 'react-native-image-crop-picker';
 import {post} from '../../api';
-import {ACCOUNT_CHECKHEADIMAGE} from '../../api/pathMap';
-const USer = () => {
+import {useSelector} from 'react-redux';
+import {ACCOUNT_CHECKHEADIMAGE, ACCOUNT_REGINFO} from '../../api/pathMap';
+import JMessage from '../../utils/JMessage';
+const USer = props => {
   const Toast = useToast();
   const currentDate = moment(new Date()).format('YYYY-MM-DD');
+  // 获取redux的值
+  const reduxData = useSelector(state => {
+    return state;
+  });
   const [gender, setGender] = useState('男');
   const chooseGender = el => {
     setGender(el);
@@ -87,16 +93,66 @@ const USer = () => {
     });
     setImage(res);
     setIsvisiable(true);
-  };
-  const uploadHeadImg = image => {
-    let formData = new FormData();
-    formData.append('headPhone', {
-      url: image.placeholder,
-      type: image.mime,
-      name: image.path.split('/').pop(),
+    const res0 = await uploadHeadImg(res);
+    console.log(res0);
+    if (res0.code !== '10000') {
+      return Toast.show({title: '上传头像失败'});
+    }
+    const header = res0.data.headImgPath;
+    const params = {
+      nickName,
+      gender,
+      birthday,
+      city,
+      lng,
+      lat,
+      address,
+      header,
+    };
+    const res1 = await post(ACCOUNT_REGINFO, params);
+    if (res1.code !== '10000') {
+      return Toast.show({title: '完善个人信息失败'});
+    }
+    const {id, phoneNumber} = reduxData;
+    await jgBusiness(id, phoneNumber);
+    setIsvisiable(false);
+    Toast.show({
+      description: '恭喜操作成功！',
+      status: 'success',
+      duration: 2000,
     });
-    // post(ACCOUNT_CHECKHEADIMAGE,{})
+    setTimeout(() => {
+      // props.navigation.reset({
+      //   routes:[
+      //     {name:""}
+      //   ]
+      // });
+      // 准备跳转
+    }, 2000);
   };
+  const uploadHeadImg = img => {
+    let formData = new FormData();
+    formData.append('headPhoto', {
+      // 本地图片的地址
+      uri: img.path,
+      // 图片的类型
+      type: img.mime,
+      // 图片的名称 file:///store/com/pic/dsf/d343.jpg
+      name: img.path.split('/').pop(),
+    });
+    const result = post(ACCOUNT_CHECKHEADIMAGE, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return result;
+  };
+  // 执行极光注册
+  const jgBusiness = (username, password) => {
+    // 在 App 里面 进行极光的初始化
+    return JMessage.register(username, password);
+  };
+
   return (
     <View style={{backgroundColor: '#fff', flex: 1, padding: pxToDp(20)}}>
       {/* 标题sta */}

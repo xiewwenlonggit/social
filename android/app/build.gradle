@@ -141,6 +141,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        //极光
+        multiDexEnabled true // 新增的
+        manifestPlaceholders = [
+        JPUSH_APPKEY: "edaf7be55aaed663a3c2d995",	//在此替换你的APPKey
+        APP_CHANNEL: "developer-default"		//应用渠道号
+        ]
     }
     splits {
         abi {
@@ -196,6 +202,11 @@ dependencies {
     // 如果你需要支持WebP格式，包括WebP动图
     implementation 'com.facebook.fresco:animated-webp:2.1.0'
     implementation 'com.facebook.fresco:webpsupport:2.0.0'
+    //极光
+    compile project(':jmessage-react-plugin') // 新增的
+    compile project(':jcore-react-native')  // 新增的
+    implementation project(':jpush-react-native')  // 添加 jpush 依赖
+
 
 
     implementation project(':react-native-amap-geolocation')

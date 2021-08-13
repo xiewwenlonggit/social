@@ -3,6 +3,9 @@ import {BASE_URI} from './pathMap';
 // import Toast from "./Toast";
 import Store from '../redux/store';
 import {setLoading} from '../redux/actions/loading';
+const {
+  user: {token},
+} = Store.getState();
 // 配置请求头
 axios.defaults.headers['Content-Type'] = 'application/json';
 // 响应时间
@@ -53,6 +56,7 @@ function get(url, params, options = {}) {
           ...options,
           headers: {
             ...header,
+            Authorization: `Bearer ${token}`,
           },
         },
       )
@@ -68,9 +72,9 @@ function get(url, params, options = {}) {
 /**
  * post方法，对应post请求
  * @param {String} url [请求的url地址]
- * @param {Object} params [请求时携带的参数]
+ * @param {any} params [请求时携带的参数]
  */
-function post(url, params, options = {}) {
+function post(url, params = {}, options = {}) {
   try {
     const headers = options.headers || {};
     return new Promise((resolve, reject) => {
@@ -79,6 +83,7 @@ function post(url, params, options = {}) {
           ...options,
           headers: {
             ...headers,
+            Authorization: `Bearer ${token}`,
           },
         })
         .then(res => {
