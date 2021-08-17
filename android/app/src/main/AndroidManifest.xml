@@ -25,6 +25,6 @@
       <!-- 极光的配置 -->
       <meta-data android:name="JPUSH_CHANNEL" android:value="${APP_CHANNEL}" />
       <meta-data android:name="JPUSH_APPKEY" android:value="${JPUSH_APPKEY}" />
-      <meta-data android:name="com.amap.api.v2.apikey" android:value="key" >cc7d3bdcc6c391887c985616b8fef6d8</meta-data>
+      <meta-data android:name="com.amap.api.v2.apikey" android:value="cc7d3bdcc6c391887c985616b8fef6d8" />
     </application>
 </manifest>

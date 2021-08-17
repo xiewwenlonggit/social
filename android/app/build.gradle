@@ -141,11 +141,10 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        //极光
-        multiDexEnabled true // 新增的
+        multiDexEnabled true
         manifestPlaceholders = [
-        JPUSH_APPKEY: "edaf7be55aaed663a3c2d995",	//在此替换你的APPKey
-        APP_CHANNEL: "developer-default"		//应用渠道号
+        JPUSH_APPKEY: "edaf7be55aaed663a3c2d995",	
+        APP_CHANNEL: "developer-default"
         ]
     }
     splits {

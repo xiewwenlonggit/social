@@ -5,15 +5,17 @@ import axios from 'axios';
 const useGeo = () => {
   const initGeo = async () => {
     if (Platform.OS === 'android') {
-      await PermissionsAndroid.request(
+      const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
       );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        await init({
+          android: 'cc7d3bdcc6c391887c985616b8fef6d8',
+          // ios: 'cc7d3bdcc6c391887c985616b8fef6d8',
+        });
+        return Promise.resolve();
+      }
     }
-    await init({
-      ios: 'cc7d3bdcc6c391887c985616b8fef6d8',
-      android: 'cc7d3bdcc6c391887c985616b8fef6d8',
-    });
-    return Promise.resolve();
   };
   const GetCurrentPosition = async () => {
     return new Promise((resolve, reject) => {
@@ -31,6 +33,7 @@ const useGeo = () => {
         key: 'ae624e90becaba1baf1d24729bfbf0ea',
       },
     });
+    console.log('data:', res.data);
     return Promise.resolve(res.data);
   };
   return {initGeo, GetCurrentPosition, getCityByLocation};

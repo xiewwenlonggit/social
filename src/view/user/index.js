@@ -43,13 +43,13 @@ const USer = props => {
     async function getLocation() {
       Toast.show({title: '获取地理位置'});
       const res = await Geo.getCityByLocation();
+      console.log('res', res);
       const address1 = res.regeocode.formatted_address;
       const city1 = res.regeocode.addressComponent.district;
       const lng1 =
         res.regeocode.addressComponent.streetNumber.location.split(',')[0];
       const lat1 =
         res.regeocode.addressComponent.streetNumber.location.split(',')[1];
-      // console.log(res);
       setCity(city1);
       setAddress(address1);
       setLat(lat1);
@@ -94,7 +94,6 @@ const USer = props => {
     setImage(res);
     setIsvisiable(true);
     const res0 = await uploadHeadImg(res);
-    console.log(res0);
     if (res0.code !== '10000') {
       return Toast.show({title: '上传头像失败'});
     }
@@ -113,7 +112,9 @@ const USer = props => {
     if (res1.code !== '10000') {
       return Toast.show({title: '完善个人信息失败'});
     }
-    const {id, phoneNumber} = reduxData;
+    const {
+      user: {id, phoneNumber},
+    } = reduxData;
     await jgBusiness(id, phoneNumber);
     setIsvisiable(false);
     Toast.show({
@@ -122,11 +123,9 @@ const USer = props => {
       duration: 2000,
     });
     setTimeout(() => {
-      // props.navigation.reset({
-      //   routes:[
-      //     {name:""}
-      //   ]
-      // });
+      props.navigation.reset({
+        routes: [{name: 'Home'}],
+      });
       // 准备跳转
     }, 2000);
   };

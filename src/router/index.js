@@ -30,10 +30,10 @@ const Stack = createStackNavigator();
 // @observer
 const Nav = () => {
   const {token} = useSelector(store => store.user);
-  const initName = token ? 'UserInfo' : 'Login';
+  const initName = token ? 'Home' : 'Login';
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName={initName}>
+      <Stack.Navigator headerMode="Home" initialRouteName={initName}>
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="UserInfo" component={UserInfo} />
         <Stack.Screen name="Home" component={Home} />
